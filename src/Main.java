@@ -1,4 +1,5 @@
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +20,7 @@ public class Main {
         portfolioList.forEach(portfolio -> {
             System.out.println("Portfolio Type: " + portfolio.type);
             List<Double> simulatedFutureReturns = new ArrayList();
+
             for(int j = 0; j < SIMULATION_COUNT; j++) {
                 double previousYearValue = INITIAL_AMOUNT;
                 double futureReturn = previousYearValue;
@@ -43,11 +45,19 @@ public class Main {
             //sort the simulated runs to get the median and percentile values.
             Collections.sort(simulatedFutureReturns);
             //save the array to plot a graph in excel later.
-            Arrays.asList(simulatedFutureReturns);
+            FileWriter fw= null;
+            try {
+                fw = new FileWriter(portfolio.type + ".txt");
+                fw.write(""+Arrays.asList(simulatedFutureReturns));
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-            System.out.println("median: " + simulatedFutureReturns.get(simulatedFutureReturns.size()/2));
-            System.out.println("90th percentile: " + simulatedFutureReturns.get(9000));
-            System.out.println("10th percentile: " + simulatedFutureReturns.get(1000));
+
+            System.out.println("median: " + simulatedFutureReturns.get((simulatedFutureReturns.size()/2)-1));
+            System.out.println("90th percentile: " + simulatedFutureReturns.get(8999));
+            System.out.println("10th percentile: " + simulatedFutureReturns.get(999));
             System.out.println("###########");
         });
 
